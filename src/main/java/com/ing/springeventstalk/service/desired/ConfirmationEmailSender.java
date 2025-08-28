@@ -1,4 +1,4 @@
-package com.ing.springeventstalk.service;
+package com.ing.springeventstalk.service.desired;
 
 import org.springframework.stereotype.Component;
 

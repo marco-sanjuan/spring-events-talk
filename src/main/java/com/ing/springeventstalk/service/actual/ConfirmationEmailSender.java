@@ -1,9 +1,9 @@
-package com.ing.springeventstalk.service;
+package com.ing.springeventstalk.service.actual;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class CrossSellingAnalyser {
+public class ConfirmationEmailSender {
 
     public void send(Object object){
 

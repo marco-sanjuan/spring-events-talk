@@ -1,4 +1,4 @@
 package com.ing.springeventstalk.domain;
 
-public class Account {
+public class ShoppingCart {
 }
