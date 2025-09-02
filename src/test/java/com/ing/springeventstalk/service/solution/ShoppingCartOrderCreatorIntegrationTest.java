@@ -1,21 +1,23 @@
 package com.ing.springeventstalk.service.solution;
 
+import com.ing.springeventstalk.config.TestTransactionConfig;
 import com.ing.springeventstalk.domain.OrderCreated;
 import com.ing.springeventstalk.domain.ShoppingCart;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.test.context.transaction.TestTransaction;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@TestPropertySource(properties = {
-    "spring.main.allow-bean-definition-overriding=true"
-})
+@Import(TestTransactionConfig.class)
+@Transactional
 class ShoppingCartOrderCreatorIntegrationTest {
 
     @Autowired
@@ -45,8 +47,10 @@ class ShoppingCartOrderCreatorIntegrationTest {
 
         // When
         shoppingCartOrderCreator.order(shoppingCart);
-
-        Thread.sleep(1000);
+        
+        // Forzar el commit de la transacción para que los @TransactionalEventListener se ejecuten
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
 
         // Then - verificar que todos los event listeners se ejecutan
         verify(stockAllocator, times(1)).allocate(any(OrderCreated.class));
@@ -55,6 +59,7 @@ class ShoppingCartOrderCreatorIntegrationTest {
         verify(crossSellingManager, times(1)).manage(any(OrderCreated.class));
     }
 
+    @SneakyThrows
     @Test
     void shouldExecuteEventListenersInCorrectOrder() {
         // Given
@@ -62,6 +67,10 @@ class ShoppingCartOrderCreatorIntegrationTest {
 
         // When
         shoppingCartOrderCreator.order(shoppingCart);
+        
+        // Forzar el commit de la transacción para que los @TransactionalEventListener se ejecuten
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
 
         // Then - verificar el orden de ejecución basado en @Order
         var inOrder = inOrder(stockAllocator, invoiceGenerator, confirmationEmailSender, crossSellingManager);
@@ -78,6 +87,10 @@ class ShoppingCartOrderCreatorIntegrationTest {
 
         // When
         shoppingCartOrderCreator.order(shoppingCart);
+        
+        // Forzar el commit de la transacción para que los @TransactionalEventListener se ejecuten
+        TestTransaction.flagForCommit();
+        TestTransaction.end();
 
         // Then - verificar que los event listeners reciben el evento con el ShoppingCart correcto
         verify(stockAllocator, times(1)).allocate(argThat(event -> 
