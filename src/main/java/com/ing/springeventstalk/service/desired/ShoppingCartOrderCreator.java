@@ -3,16 +3,18 @@ package com.ing.springeventstalk.service.desired;
 import com.ing.springeventstalk.domain.ShoppingCart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
 @RequiredArgsConstructor
-@Transactional
 public class ShoppingCartOrderCreator {
 
     private final StockAllocator stockAllocator;
+    
     private final ConfirmationEmailSender confirmationEmailSender;
+    
     private final CrossSellingManager crossSellingManager;
+    
     private final InvoiceGenerator invoiceGenerator;
 
     public void order(ShoppingCart shoppingCart){

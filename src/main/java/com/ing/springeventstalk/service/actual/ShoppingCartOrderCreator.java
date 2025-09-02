@@ -3,16 +3,24 @@ package com.ing.springeventstalk.service.actual;
 import com.ing.springeventstalk.domain.ShoppingCart;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@Component("actualShoppingCartOrderCreator")
 @RequiredArgsConstructor
 @Transactional
 public class ShoppingCartOrderCreator {
 
+    @Qualifier("actualStockAllocator")
     private final StockAllocator stockAllocator;
+    
+    @Qualifier("actualConfirmationEmailSender")
     private final ConfirmationEmailSender confirmationEmailSender;
+    
+    @Qualifier("actualCrossSellingManager")
     private final CrossSellingManager crossSellingManager;
+    
+    @Qualifier("actualInvoiceGenerator")
     private final InvoiceGenerator invoiceGenerator;
     //...
 

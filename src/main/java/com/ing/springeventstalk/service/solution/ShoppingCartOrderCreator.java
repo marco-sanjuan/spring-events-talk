@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-@Component
+@Component("solutionShoppingCartOrderCreator")
 @RequiredArgsConstructor
 @Transactional
 @Slf4j

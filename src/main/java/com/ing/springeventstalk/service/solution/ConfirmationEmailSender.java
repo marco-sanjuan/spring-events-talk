@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-@Component
+@Component("solutionConfirmationEmailSender")
 @Slf4j
 public class ConfirmationEmailSender {
 
     @Async //new thread, does not impact on user experience
-    @TransactionalEventListener (condition = "event.getShoppingCart().getEmail() != null") //default phase AFTER_COMMIT
+    @TransactionalEventListener(condition = "event.getShoppingCart() != null") //default phase AFTER_COMMIT
     @Transactional(propagation = Propagation.REQUIRES_NEW) //stats new transaction
     @Order(3)
     public void send(OrderCreated event){

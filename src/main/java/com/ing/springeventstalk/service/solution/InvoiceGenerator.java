@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-@Component
+@Component("solutionInvoiceGenerator")
 @Slf4j
 public class InvoiceGenerator {
 
