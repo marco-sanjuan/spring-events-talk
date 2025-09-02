@@ -1,21 +1,21 @@
 package com.ing.springeventstalk.service.actual;
 
+import com.ing.springeventstalk.config.TestTransactionConfig;
 import com.ing.springeventstalk.domain.ShoppingCart;
 import org.junit.jupiter.api.Test;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
-@TestPropertySource(properties = {
-    "spring.main.allow-bean-definition-overriding=true"
-})
-class ShoppingCartOrderCreatorIntegrationTest {
+@Import(TestTransactionConfig.class)
+@Transactional
+class ShoppingCartOrderCreatorIT {
 
     @Autowired
     private ShoppingCartOrderCreator shoppingCartOrderCreator;
@@ -25,16 +25,16 @@ class ShoppingCartOrderCreatorIntegrationTest {
     private StockAllocator stockAllocator;
 
     @MockitoBean
+    @Qualifier("actualInvoiceGenerator")
+    private InvoiceGenerator invoiceGenerator;
+
+    @MockitoBean
     @Qualifier("actualConfirmationEmailSender")
     private ConfirmationEmailSender confirmationEmailSender;
 
     @MockitoBean
     @Qualifier("actualCrossSellingManager")
     private CrossSellingManager crossSellingManager;
-
-    @MockitoBean
-    @Qualifier("actualInvoiceGenerator")
-    private InvoiceGenerator invoiceGenerator;
 
     @Test
     void shouldCallAllSecondaryCollaboratorsWhenOrdering() {
@@ -44,7 +44,9 @@ class ShoppingCartOrderCreatorIntegrationTest {
         // When
         shoppingCartOrderCreator.order(shoppingCart);
 
-        // Then
+        //NO FORCE COMMIT NEEDED
+
+        // Then - verificar que todos los event listeners se ejecutan
         verify(stockAllocator, times(1)).allocate(shoppingCart);
         verify(invoiceGenerator, times(1)).generate(shoppingCart);
         verify(confirmationEmailSender, times(1)).send(shoppingCart);
@@ -58,6 +60,8 @@ class ShoppingCartOrderCreatorIntegrationTest {
 
         // When
         shoppingCartOrderCreator.order(shoppingCart);
+
+        //NO FORCE COMMIT NEEDED
 
         // Then - verificar el orden de las llamadas
         var inOrder = inOrder(stockAllocator, invoiceGenerator, confirmationEmailSender, crossSellingManager);

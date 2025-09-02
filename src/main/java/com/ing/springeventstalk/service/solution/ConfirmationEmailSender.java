@@ -17,7 +17,6 @@ public class ConfirmationEmailSender {
     @Async //new thread, does not impact on user experience
     @TransactionalEventListener //default phase AFTER_COMMIT
     @Transactional(propagation = Propagation.REQUIRES_NEW) //stats new transaction
-    //@Order(3) // if async,
     public void send(OrderCreated event){
 
         //DO THE STUFF
