@@ -2,6 +2,8 @@ package com.ing.springeventstalk.service.solution;
 
 import com.ing.springeventstalk.domain.OrderCreated;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -15,6 +17,7 @@ public class CrossSellingManager {
     @Async //new thread, does not impact on user experience
     @TransactionalEventListener //default phase AFTER_COMMIT
     @Transactional(propagation = Propagation.REQUIRES_NEW) //stats new transaction
+    @Order(4)
     public void manage(OrderCreated event){
 
         //DO THE STUFF

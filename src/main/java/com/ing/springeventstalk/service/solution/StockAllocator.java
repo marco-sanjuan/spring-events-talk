@@ -4,6 +4,7 @@ import com.ing.springeventstalk.domain.OrderCreated;
 import com.ing.springeventstalk.domain.ShoppingCart;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class StockAllocator {
 
     @EventListener(OrderCreated.class)
+    @Order(1)
     public void allocate(OrderCreated event){
 
         //DO THE STUFF
